@@ -48,7 +48,7 @@ export default class App extends Component {
 
   render() {
     const {state} = this
-    //const {width, height} = require('Dimensions').get('window')
+    const {width, height} = require('Dimensions').get('window')
     return (
       <View style={styles.container}>
         <ScrollView style={{display: state.menuVisible ? 'none' : null}}>
@@ -60,7 +60,7 @@ export default class App extends Component {
               >
                 <Image
                   style={{
-                    width: 300,
+                    width,
                     height: 300,
                     margin: 5,
                   }}
@@ -71,8 +71,11 @@ export default class App extends Component {
           })}
         </ScrollView>
         <View style={{display: state.menuVisible ? null : 'none'}}>
+          <Button onPress={this.hideMenu}
+            title="&#x2715;"
+          />
           {Object.keys(this.state.albums).map(x => {
-            return (<Text>{x}</Text>)
+            return (<Button key={x} title={x} onPress={evt => evt} />)
           })}
           <TextInput onChangeText={this.setNewAlbumName}/>
           <Button
@@ -99,7 +102,10 @@ async function requestCameraRollPermission(comp) {
       CameraRoll.getPhotos({
         first: 20,
         assetType: 'Photos'
-      }).then(r => comp.setState({photos: r.edges}))
+      }).then(r => {
+        console.log(r.edges[0])
+        comp.setState({photos: r.edges})
+      })
     } else alert('Camera Roll permissions required')
   } catch (e) {
     console.log(e)
